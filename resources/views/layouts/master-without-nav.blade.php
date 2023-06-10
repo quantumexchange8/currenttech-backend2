@@ -32,6 +32,7 @@
 {{--</header>--}}
 <div class="content">
     @yield('contents')
+    @include('sweetalert::alert', ['cdn' => "https://cdn.jsdelivr.net/npm/sweetalert2@9"])
 </div>
 <!-- /Page Content -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>

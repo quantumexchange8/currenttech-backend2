@@ -18,13 +18,20 @@
                         <img src="{{ asset('assets/Images/CT(Logo).png')}}" alt="background" class="w-50">
                         <h4 class="pt-4">ADMIN PORTAL</h4>
                         <h5 class="pb-2 login">Reset Password</h5>
-                        <div class="login-form d-flex flex-column d-flex align-items-center">
-                            <div class="mt-2">
-                                <label for="inputID" class="form-label">Email Address</label>
-                                <input type="text" class="form-control" id="inputID">
+                        <form method="post" action="{{ route('post_forgot_password') }}">
+                            @csrf
+                            <div class="d-flex flex-column d-flex align-items-center">
+                                <div class="mt-2">
+                                    <label for="email" class="form-label">Email Address</label>
+                                    <input type="text" class="form-control" id="email" name="email" placeholder="name@company.com" value="{{ old('email') }}">
+                                    @error('email')
+                                    <p class="pt-2 text-danger">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                                <button type="submit" class="btn mt-4 bg-dark-blue text-light">Confirm</button>
                             </div>
-                            <a href="{{ url('dashboard') }}" class="btn mt-4 bg-dark-blue text-light">Confirm</a>
-                        </div>
+                        </form>
+
                     </div>
                 </div>
             </div>

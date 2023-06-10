@@ -42,6 +42,14 @@
         .custom-dark-purple {
             background-color: rgba(19, 17, 28, 1); !important;
         }
+        input[type=file]::file-selector-button {
+            background-color: rgba(53, 57, 114, 1);
+            color: white;
+        }
+
+        input[type=file]::file-selector-button:hover {
+            background-color: rgba(19, 17, 28, 1);
+        }
     </style>
 
     <!-- Scripts -->
@@ -57,12 +65,23 @@
     <div id="layoutSidenav_content">
         <main>
             @yield('content')
+            @include('sweetalert::alert', ['cdn' => "https://cdn.jsdelivr.net/npm/sweetalert2@9"])
         </main>
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/js/bootstrap.bundle.min.js"></script>
+<script>
+    var alertCloseBtns = document.querySelectorAll('.alert .close');
+    alertCloseBtns.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            this.closest('.alert').remove();
+        });
+    });
+</script>
 <script src="{{asset('assets/js/scripts.js')}}"></script>
+@yield('script')
 </body>
 </html>

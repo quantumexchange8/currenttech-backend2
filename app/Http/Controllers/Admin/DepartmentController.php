@@ -3,16 +3,54 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Departments;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rules\Password;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class DepartmentController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $validator = null;
+        $input = null;
+
+        $departments = Departments::query()->orderbyDesc('created_at')->paginate(3);
+        $department_heads_array = Departments::whereNotNull('department_head_id')->pluck('department_head_id')->toArray();
+        $users_without_admin = User::whereNotIn('id', $department_heads_array);
+
+        if ($request->isMethod('post')) {
+            $validator = Validator::make($request->all(), [
+                'department_name' => 'required',
+                'department_head' => 'required',
+            ])->setAttributeNames([
+                'department_name' => trans('public.department_name'),
+                'department_head' => trans('public.department_head'),
+            ]);
+
+            if (!$validator->fails()) {
+                $department = Departments::create([
+                    'name' => $request->input('department_name'),
+                    'department_head_id' => $request->input('department_head'),
+                ]);
+                $user = User::find($request->input('department_head'));
+                $user->department_id = $department->id;
+                $user->save();
+                Alert::success(trans('public.success'), trans('public.successfully_added_department'));
+                return redirect()->route('departments_index');
+            }
+
+            $input = (object) $request->all();
+        }
+
 
         return view('departments.index', [
-            'title' => trans('public.trader_withdrawal'),
-            'records' => collect([1, 2, 3, 4, 5]),
-        ]);
+            'title' => trans('public.department'),
+            'input' => $input,
+            'records' => $departments,
+            'head_options' => $users_without_admin->pluck('name', 'id')->toArray()
+        ])->withErrors($validator);
     }
 }
