@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\Projects;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,19 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('projects', function (Blueprint $table) {
+        Schema::create('project_attachments', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->integer('category')->default(Projects::CATEGORY_NEW);
-            $table->longText('description');
-            $table->dateTime('start_date');
-            $table->dateTime('end_date');
-            $table->integer('notification_target')->default(Projects::TARGET_MEMBER);
-            $table->integer('priority')->default(Projects::PRIORITY_URGENT);
-            $table->string('members');
-
+            $table->string('attachment');
             $table->timestamps();
             $table->softDeletes();
+            $table->unsignedBigInteger('project_id');
+            $table->foreign('project_id')
+                ->references('id')
+                ->on('projects')
+                ->onUpdate('cascade');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')
                 ->references('id')
@@ -38,6 +34,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('projects');
+        Schema::dropIfExists('project_attachments');
     }
 };

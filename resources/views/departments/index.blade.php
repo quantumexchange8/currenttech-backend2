@@ -69,11 +69,13 @@
                                 @endforeach
 
                                 </tbody>
-                                <tr>
-                                    <td colspan="10" class="pt-3 pb-0">
-                                        {!! $records->links('pagination::bootstrap-4') !!}
-                                    </td>
-                                </tr>
+                                @if ($records->hasPages())
+                                    <tr>
+                                        <td colspan="10" class="pt-3 pb-0">
+                                            {!! $records->links('pagination::bootstrap-4') !!}
+                                        </td>
+                                    </tr>
+                                @endif
                             </table>
                         @else
                             <caption class="text-secondary">
@@ -138,8 +140,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@lang('public.close')</button>
+                    <button type="submit" class="btn btn-primary">@lang('public.save')</button>
                 </div>
             </div>
         </div>
@@ -149,12 +151,10 @@
 @section('script')
     <script>
         $(document).ready(function() {
-            console.log('asdsaaada');
-            // Trigger the modal with a button click or any other event
             @if($errors->any())
             $('#exampleModal').modal('show');
-            console.log('asdsada');
             @endif
+
         });
     </script>
 @endsection

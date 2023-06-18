@@ -24,10 +24,16 @@ class EmployeeController extends Controller
         ]);
     }
 
+    public function getData($id)
+    {
+        $data = User::find($id);
+
+        return response()->json($data);
+    }
+
     public function detail($id = null)
     {
-        if ($id)
-        {
+        if ($id) {
             $user = User::find($id);
         } else {
             $user = Auth::user();
@@ -96,7 +102,7 @@ class EmployeeController extends Controller
                     'socso_account_number' => $request->input('socso_account_number'),
                     'income_tax_number' => $request->input('income_tax_number'),
                     'employee_id' => $request->input('employee_id'),
-                    'password' => Hash::make( $request->input('user_password')),
+                    'password' => Hash::make($request->input('user_password')),
                     'employment_type' => $request->input('employment_type'),
                     'designation' => $request->input('designation'),
                     'salary' => $request->input('basic_salary'),
@@ -131,7 +137,7 @@ class EmployeeController extends Controller
                 return redirect()->route('add_employee');
             }
 
-            $input = (object) $request->all();
+            $input = (object)$request->all();
         }
 
         return view('employees.form', [
@@ -152,13 +158,12 @@ class EmployeeController extends Controller
     {
         $validator = null;
         $user = User::find($id);
-        if (!$user)
-        {
+        if (!$user) {
             Alert::error(trans('public.invalid_user'), trans('public.try_again'));
             return redirect()->back();
         }
 
-        $input = (object) [
+        $input = (object)[
             'employee_name' => $user->name,
             'gender' => $user->gender,
             'nationality' => $user->nationality,
@@ -280,7 +285,7 @@ class EmployeeController extends Controller
                 return redirect()->route('update_employee', $user->id);
             }
 
-            $input = (object) $request->all();
+            $input = (object)$request->all();
         }
 
         return view('employees.form', [
@@ -294,6 +299,45 @@ class EmployeeController extends Controller
             'list_departments' => Departments::all()->pluck('name', 'id')->toArray(),
             'list_banks' => User::listBanks(),
             'input' => $input
+        ])->withErrors($validator);
+    }
+
+    public function update_attitude_punctuality(Request $request)
+    {
+        $users = User::all();
+
+        $validator = null;
+        $input = null;
+
+
+
+        if ($request->isMethod('post')) {
+            $user = User::find($request->id);
+            $validator = Validator::make($request->all(), [
+                'attitude' => 'required|numeric|max:100',
+                'punctuality' => 'required|numeric|max:100',
+            ]);
+
+            if (!$validator->fails()) {
+                $update_info = [
+                    'attitude' => $request->input('attitude'),
+                    'punctuality' => $request->input('punctuality'),
+                ];
+
+                $user->update($update_info);
+
+                Alert::success(trans('public.success'), trans('public.successfully_added_employee'));
+                return redirect()->route('employees_index');
+            }
+
+            $input = (object)$request->all();
+        }
+
+        return view('employees.index', [
+            'user' => User::listRace(),
+            'title' => trans('public.employee_list'),
+            'input' => $input,
+            'users' => $users,
         ])->withErrors($validator);
     }
 }

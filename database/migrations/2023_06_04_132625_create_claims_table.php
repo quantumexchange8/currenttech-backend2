@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('description');
             $table->string('merchant');
             $table->string('reason');
+            $table->string('decline_reason')->nullable();
             $table->integer('status')->default(Claims::STATUS_PENDING);
             $table->string('attachment')->nullable();
             $table->timestamps();

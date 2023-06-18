@@ -27,6 +27,11 @@ return new class extends Migration
                 ->references('id')
                 ->on('users')
                 ->onUpdate('cascade');
+            $table->unsignedBigInteger('project_id');
+            $table->foreign('project_id')
+                ->references('id')
+                ->on('projects')
+                ->onUpdate('cascade');
         });
     }
 

@@ -65,6 +65,22 @@ class User extends Authenticatable
      *   Return list of status codes and labels
      * @return array
      */
+    public static function getAdminType($type)
+    {
+        switch ($type) {
+
+            case self::TYPE_SUBADMIN:
+                return trans('public.sub_admin');
+
+            default:
+                return trans('public.super_admin');
+        }
+    }
+
+    /**
+     *   Return list of status codes and labels
+     * @return array
+     */
     public static function listGender()
     {
         return [

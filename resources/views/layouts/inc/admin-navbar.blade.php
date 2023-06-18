@@ -34,8 +34,8 @@
             </ul>
         </li>
         <li class="content">
-                <p class="text-white mb-0 pt-3" style="font-size: 11px;"><strong>Jasmine Lee Mei Hwa</strong></p>
-                <p class=" text-muted" style="font-size: 10px;">Super Admin</p>
+                <p class="text-white mb-0 pt-3" style="font-size: 11px;"><strong>{{Auth::user()->name}}</strong></p>
+                <p class=" text-muted" style="font-size: 10px;">{{Auth::user()->designation}}</p>
         </li>
     </ul>
 </div>

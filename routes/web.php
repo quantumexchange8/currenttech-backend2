@@ -60,39 +60,49 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::prefix('admin')->group(function() {
         Route::controller(DashboardController::class)->group(function () {
-            Route::get('/dashboard', 'index')->name('dashboard');
+            Route::match(['get', 'post'], '/dashboard', 'index')->name('dashboard');
+            Route::get('/get_checkin_data/{id}', 'getData')->name('get_checkin_data');
         });
         Route::controller(AdminController::class)->group(function () {
-            Route::get('/subadmin', 'index')->name('admin_index');
+            Route::match(['get', 'post'], '/subadmin', 'index')->name('admin_index');
         });
         Route::controller(DepartmentController::class)->group(function () {
             Route::match(['get', 'post'], '/departments', 'index')->name('departments_index');
         });
         Route::controller(TicketController::class)->group(function () {
-            Route::get('/tickets', 'index')->name('tickets_index');
+            Route::match(['get', 'post'], '/tickets', 'index')->name('tickets_index');
         });
         Route::controller(LeaveController::class)->group(function () {
-            Route::get('/leaves', 'index')->name('leaves_index');
+            Route::match(['get', 'post'], '/leaves', 'index')->name('leaves_index');
+            Route::get('/get_leave_data/{id}', 'getData')->name('get_leave_data');
         });
         Route::controller(ClaimController::class)->group(function () {
-            Route::get('/claims', 'index')->name('claims_index');
+            Route::match(['get', 'post'], '/claims', 'index')->name('claims_index');
+            Route::get('/get_claim_data/{id}', 'getData')->name('get_claim_data');
         });
         Route::controller(PayrollController::class)->group(function () {
             Route::get('/payrolls', 'index')->name('payrolls_index');
         });
         Route::controller(ProjectController::class)->group(function () {
-            Route::get('/tasks', 'task_index')->name('tasks_index');
-            Route::get('/projects', 'project_index')->name('projects_index');
-            Route::get('/project_details/{id}', 'project_details')->name('project_details');
+            Route::match(['get', 'post'], '/tasks', 'task_index')->name('tasks_index');
+            Route::match(['get', 'post'], '/projects', 'project_index')->name('projects_index');
+            Route::match(['get', 'post'], '/project_details/{id}', 'project_details')->name('project_details');
+            Route::post('/add_attachments/{id}', 'add_attachments')->name('add_attachments');
+            Route::get('/get_task_data/{id}', 'getTaskData')->name('get_task_data');
+            Route::get('/get_project_data/{id}', 'getProjectData')->name('get_project_data');
         });
         Route::controller(AnnouncementController::class)->group(function () {
-            Route::get('/announcements', 'index')->name('announcements_index');
+            Route::match(['get', 'post'], '/announcements', 'index')->name('announcements_index');
+            Route::post('/update_announcement', 'update')->name('update_announcement');
+            Route::get('/get_announcement_data/{id}', 'getData')->name('get_announcement_data');
         });
         Route::controller(EmployeeController::class)->group(function () {
             Route::get('/employees', 'index')->name('employees_index');
             Route::get('/employee_detail/{id?}', 'detail')->name('employee_detail');
+            Route::get('/get_user_data/{id}', 'getData')->name('get_user_data');
             Route::match(['get', 'post'], '/add_employee', 'add')->name('add_employee');
             Route::match(['get', 'post'], '/update_employee/{id}', 'update')->name('update_employee');
+            Route::post('/update_attitude_punctuality', 'update_attitude_punctuality')->name('update_attitude_punctuality');
         });
     });
 

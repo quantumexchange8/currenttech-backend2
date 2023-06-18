@@ -20,7 +20,8 @@ return new class extends Migration
             $table->integer('days');
             $table->integer('status')->default(Leaves::STATUS_PENDING);
             $table->string('attachment')->nullable();
-
+            $table->string('reason')->nullable();
+            $table->string('leave_reason')->nullable();
             $table->timestamps();
             $table->softDeletes();
             $table->unsignedBigInteger('user_id');
