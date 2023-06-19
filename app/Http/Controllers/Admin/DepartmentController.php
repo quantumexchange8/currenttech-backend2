@@ -53,4 +53,25 @@ class DepartmentController extends Controller
             'head_options' => $users_without_admin->pluck('name', 'id')->toArray()
         ])->withErrors($validator);
     }
+
+    public function delete(Request $request)
+    {
+        $department = Departments::find($request->input('id'));
+
+        if (!$department) {
+            dd($department, $request->input('id'));
+            Alert::error(trans('public.invalid_department'), trans('public.try_again'));
+            return redirect()->route('departments_index');
+        }
+
+        foreach($department->members as $user) {
+            $user->department_id = null;
+            $user->save();
+        }
+
+        $department->delete();
+
+        Alert::success(trans('public.success'), trans('public.successfully_deleted_department'));
+        return redirect()->route('departments_index');
+    }
 }

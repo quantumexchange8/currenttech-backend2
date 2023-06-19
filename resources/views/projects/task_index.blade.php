@@ -144,7 +144,7 @@
                                             <i class="fa fa-pencil text-success"></i>
                                         </button>
                                         <button type="button" class="btn me-1">
-                                            <i class="fa fa-trash text-danger"></i>
+                                            <i class="fa fa-trash text-danger delete_button"  id="{{$record->id}}" data-bs-toggle="modal" data-bs-target="#deleteModal"></i>
                                         </button>
                                         <button type="button" class="btn">
                                             <i class="fa fa-eye" style="color: rgba(53, 57, 114, 1)"></i>
@@ -294,6 +294,30 @@
             </div>
         </div>
     </form>
+    <form method="post" action="{{ route('task_delete') }}" enctype="multipart/form-data">
+        @csrf
+        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <input type="hidden" name="id" id="id" value="{{ @$input->id }}">
+                        <div class="d-flex flex-column align-items-center">
+                            <h2>
+                                <i class="fa fa-trash text-danger fa-2x"></i>
+                            </h2>
+                            <h2 class="text-center text-white">@lang('public.delete_task')</h2>
+                            <h5 class="text-center pt-2 text-secondary">@lang('public.delete_task_message')</h5>
+                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-center align-items-center">
+                        <button type="button" class="btn btn-secondary"
+                                data-bs-dismiss="modal">@lang('public.close')</button>
+                        <button type="submit" name="submit"  class="btn btn-danger">@lang('public.delete')</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
 @endsection
 @section('script')
     <script>
@@ -305,7 +329,10 @@
             @if($errors->any())
             $('#exampleModal').modal('show');
             @endif
-
+            $('.delete_button').on('click', function() {
+                let id = $(this).attr('id');
+                $("#deleteModal .modal-body #id").val(id);
+            });
 
             $('#project_name').on('change', function() {
                 let selectedOption = $(this).val();

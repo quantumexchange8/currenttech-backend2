@@ -20,12 +20,12 @@ return new class extends Migration
             $table->foreign('project_id')
                 ->references('id')
                 ->on('projects')
-                ->onUpdate('cascade');
+                ->onDelete('cascade');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')
                 ->references('id')
                 ->on('users')
-                ->onUpdate('cascade');
+                ->onDelete('cascade');
         });
     }
 

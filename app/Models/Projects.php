@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Projects extends Model
 {
@@ -23,7 +24,7 @@ class Projects extends Model
     const TARGET_MEMBER = 2;
 
 
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
@@ -95,7 +96,7 @@ class Projects extends Model
 
     public function tasks(): HasMany
     {
-        return $this->hasMany(Tasks::class, 'task_id', 'id');
+        return $this->hasMany(Tasks::class, 'project_id', 'id');
     }
 
     public function user() {

@@ -19,19 +19,19 @@ return new class extends Migration
             $table->dateTime('due_date');
             $table->integer('notification_target')->default(Tasks::TARGET_MEMBER);
             $table->string('members');
-
+            $table->integer('status')->default(Tasks::STATUS_PLANNED);
             $table->timestamps();
             $table->softDeletes();
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')
                 ->references('id')
                 ->on('users')
-                ->onUpdate('cascade');
+                ->onDelete('cascade');
             $table->unsignedBigInteger('project_id');
             $table->foreign('project_id')
                 ->references('id')
                 ->on('projects')
-                ->onUpdate('cascade');
+                ->onDelete('cascade');
         });
     }
 

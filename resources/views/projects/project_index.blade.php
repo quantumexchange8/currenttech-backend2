@@ -62,7 +62,7 @@
 
                                                     <ul class="dropdown-menu dropdown-menu-end custom-dark-purple text-white"
                                                         aria-labelledby="notificationsDropdown">
-                                                        <li><a class="dropdown-item text-danger" href="#!">Delete</a>
+                                                        <li><a class="dropdown-item delete_button text-danger"   id="{{$record->id}}" data-bs-toggle="modal" data-bs-target="#deleteModal">@lang('public.delete')</a>
                                                         </li>
                                                     </ul>
                                                 </div>
@@ -337,6 +337,32 @@
             </div>
         </div>
     </form>
+
+    {{--    delete modal--}}
+    <form method="post" action="{{ route('project_delete') }}" enctype="multipart/form-data">
+        @csrf
+        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <input type="hidden" name="id" id="id" value="{{ @$input->id }}">
+                        <div class="d-flex flex-column align-items-center">
+                            <h2>
+                                <i class="fa fa-trash text-danger fa-2x"></i>
+                            </h2>
+                            <h2 class="text-center text-white">@lang('public.delete_announcement')</h2>
+                            <h5 class="text-center pt-2 text-secondary">@lang('public.delete_announcement_message')</h5>
+                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-center align-items-center">
+                        <button type="button" class="btn btn-secondary"
+                                data-bs-dismiss="modal">@lang('public.close')</button>
+                        <button type="submit" name="submit"  class="btn btn-danger">@lang('public.delete')</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
 @endsection
 @section('script')
     <script>
@@ -348,6 +374,11 @@
             @if($errors->any())
             $('#exampleModal').modal('show');
             @endif
+            $('.delete_button').on('click', function() {
+                let id = $(this).attr('id');
+                $("#deleteModal .modal-body #id").val(id);
+            });
+
 
             $('#addProject').click(function () {
                 $('#submit_form').attr('action', '{{ route('projects_index') }}');

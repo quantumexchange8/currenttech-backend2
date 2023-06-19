@@ -68,6 +68,7 @@ Route::group(['middleware' => 'auth'], function () {
         });
         Route::controller(DepartmentController::class)->group(function () {
             Route::match(['get', 'post'], '/departments', 'index')->name('departments_index');
+            Route::post('/department_delete', 'delete')->name('department_delete');
         });
         Route::controller(TicketController::class)->group(function () {
             Route::match(['get', 'post'], '/tickets', 'index')->name('tickets_index');
@@ -90,11 +91,14 @@ Route::group(['middleware' => 'auth'], function () {
             Route::post('/add_attachments/{id}', 'add_attachments')->name('add_attachments');
             Route::get('/get_task_data/{id}', 'getTaskData')->name('get_task_data');
             Route::get('/get_project_data/{id}', 'getProjectData')->name('get_project_data');
+            Route::post('/project_delete', 'delete_project')->name('project_delete');
+            Route::post('/task_delete', 'delete_task')->name('task_delete');
         });
         Route::controller(AnnouncementController::class)->group(function () {
             Route::match(['get', 'post'], '/announcements', 'index')->name('announcements_index');
             Route::post('/update_announcement', 'update')->name('update_announcement');
             Route::get('/get_announcement_data/{id}', 'getData')->name('get_announcement_data');
+            Route::post('/announcement_delete', 'delete')->name('announcement_delete');
         });
         Route::controller(EmployeeController::class)->group(function () {
             Route::get('/employees', 'index')->name('employees_index');

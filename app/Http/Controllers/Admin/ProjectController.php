@@ -339,4 +339,37 @@ class ProjectController extends Controller
 
         return response()->json($data);
     }
+
+    public function delete_project(Request $request)
+    {
+        $project = Projects::find($request->input('id'));
+
+        if (!$project) {
+            Alert::error(trans('public.invalid_project'), trans('public.try_again'));
+            return redirect('projects_index');
+        }
+
+        $project->delete();
+        $project->tasks()->delete();
+
+
+        Alert::success(trans('public.success'), trans('public.successfully_deleted_project'));
+        return redirect()->route('projects_index');
+    }
+
+    public function delete_task(Request $request)
+    {
+        $task = Tasks::find($request->input('id'));
+
+        if (!$task) {
+            Alert::error(trans('public.invalid_task'), trans('public.try_again'));
+            return redirect('tasks_index');
+        }
+
+        $task->delete();
+
+        Alert::success(trans('public.success'), trans('public.successfully_deleted_task'));
+        return redirect()->route('tasks_index');
+    }
+
 }

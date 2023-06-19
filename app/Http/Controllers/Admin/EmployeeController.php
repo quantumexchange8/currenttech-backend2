@@ -280,6 +280,11 @@ class EmployeeController extends Controller
                 }
 
                 $user->save();
+                $department_head = Departments::where('department_head_id', $user->id)->first();
+                if ($department_head) {
+                    $department_head->department_head_id = null;
+                    $department_head->save();
+                }
 
                 Alert::success(trans('public.success'), trans('public.successfully_added_employee'));
                 return redirect()->route('update_employee', $user->id);

@@ -5,6 +5,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use SebastianBergmann\CodeCoverage\Report\Xml\Project;
 
 class Tasks extends Model
@@ -19,7 +20,7 @@ class Tasks extends Model
     const STATUS_OVERDUE = 5;
 
 
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $guarded = ['id', 'created_at', 'updated_at'];
 

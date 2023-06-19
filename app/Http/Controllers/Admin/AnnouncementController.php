@@ -163,4 +163,19 @@ class AnnouncementController extends Controller
 
         return response()->json($data);
     }
+
+    public function delete(Request $request)
+    {
+        $announcement = Announcements::find($request->input('id'));
+
+        if (!$announcement) {
+            Alert::error(trans('public.invalid_announcement'), trans('public.try_again'));
+            return redirect('announcements_index');
+        }
+
+        $announcement->delete();
+
+        Alert::success(trans('public.success'), trans('public.successfully_deleted_announcement'));
+        return redirect()->route('announcements_index');
+    }
 }
