@@ -19,9 +19,9 @@ class DepartmentController extends Controller
 
         $departments = Departments::query()->orderbyDesc('created_at')->paginate(3);
         $department_heads_array = Departments::whereNotNull('department_head_id')->pluck('department_head_id')->toArray();
-        $users_without_admin = User::whereNotIn('id', $department_heads_array);
 
         if ($request->isMethod('post')) {
+            $submit_type = $request->input('submit');
             $validator = Validator::make($request->all(), [
                 'department_name' => 'required',
                 'department_head' => 'required',
@@ -31,15 +31,34 @@ class DepartmentController extends Controller
             ]);
 
             if (!$validator->fails()) {
-                $department = Departments::create([
-                    'name' => $request->input('department_name'),
-                    'department_head_id' => $request->input('department_head'),
-                ]);
-                $user = User::find($request->input('department_head'));
-                $user->department_id = $department->id;
-                $user->save();
-                Alert::success(trans('public.success'), trans('public.successfully_added_department'));
-                return redirect()->route('departments_index');
+                switch ($submit_type) {
+                    case 'add':
+                        $department = Departments::create([
+                            'name' => $request->input('department_name'),
+                            'department_head_id' => $request->input('department_head'),
+                        ]);
+                        $user = User::find($request->input('department_head'));
+                        $user->department_id = $department->id;
+                        $user->save();
+                        Alert::success(trans('public.success'), trans('public.successfully_added_department'));
+                        return redirect()->route('departments_index');
+
+                    case 'update':
+                        $department = Departments::find($request->id);
+                        $update_info = [
+                            'name' => $request->input('department_name'),
+                            'department_head_id' => $request->input('department_head'),
+                        ];
+                        $department->update($update_info);
+
+
+                        $user = User::find($request->input('department_head'));
+                        $user->department_id = $department->id;
+                        $user->save();
+                        Alert::success(trans('public.success'), trans('public.successfully_updated_department'));
+                        return redirect()->route('departments_index');
+                }
+
             }
 
             $input = (object) $request->all();
@@ -50,7 +69,7 @@ class DepartmentController extends Controller
             'title' => trans('public.department'),
             'input' => $input,
             'records' => $departments,
-            'head_options' => $users_without_admin->pluck('name', 'id')->toArray()
+            'head_options' => User::all()->pluck('name', 'id')->toArray()
         ])->withErrors($validator);
     }
 
@@ -59,7 +78,6 @@ class DepartmentController extends Controller
         $department = Departments::find($request->input('id'));
 
         if (!$department) {
-            dd($department, $request->input('id'));
             Alert::error(trans('public.invalid_department'), trans('public.try_again'));
             return redirect()->route('departments_index');
         }
@@ -74,4 +92,12 @@ class DepartmentController extends Controller
         Alert::success(trans('public.success'), trans('public.successfully_deleted_department'));
         return redirect()->route('departments_index');
     }
+
+    public function getData($id)
+    {
+        $data = Departments::with('head')->find($id);
+
+        return response()->json($data);
+    }
+
 }

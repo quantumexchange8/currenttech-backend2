@@ -69,6 +69,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::controller(DepartmentController::class)->group(function () {
             Route::match(['get', 'post'], '/departments', 'index')->name('departments_index');
             Route::post('/department_delete', 'delete')->name('department_delete');
+            Route::get('/get_department_data/{id}', 'getData')->name('get_department_data');
         });
         Route::controller(TicketController::class)->group(function () {
             Route::match(['get', 'post'], '/tickets', 'index')->name('tickets_index');

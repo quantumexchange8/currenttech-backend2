@@ -19,7 +19,7 @@
             <div class="container">
                 <div class="row justify-content-center">
                     <div class="col-11 d-flex justify-content-end my-3">
-                        <button type="button" class="btn btn-primary d-flex justify-content-center align-items-center"
+                        <button type="button" class="btn btn-primary d-flex justify-content-center align-items-center" id="addDepartment"
                                 data-bs-toggle="modal" data-bs-target="#exampleModal">
                             <i class="fa fa-add me-3"></i>
                             <span class="w-100">@lang('public.add_department')</span>
@@ -52,7 +52,7 @@
                                         <td class="d-table-cell w-auto">
                                             <div class="btn-group btn-group-sm" role="group" aria-label="Button Group">
                                                 <button type="button" class="btn">
-                                                    <i class="fa fa-pencil text-success"></i>
+                                                    <i class="fa fa-pencil text-success updateDepartment" id={{$record->id}} data-bs-toggle="modal" data-bs-target="#exampleModal"></i>
                                                 </button>
                                                 <button type="button" class="btn me-1">
                                                     <i class="fa fa-trash text-danger delete_button"  id="{{$record->id}}" data-bs-toggle="modal" data-bs-target="#deleteModal"></i>
@@ -106,13 +106,13 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-
+                    <input type="hidden" name="id" id="id" value="{{ @$input->id }}">
                     <div class="row">
                         <div class="col">
                             <div class="form-group w-100">
                                 <label for="department_head" class="form-label">@lang('public.department_head')</label>
                                 <div class="input-group">
-                                    {!! Form::select('department_head', $head_options, @$input->department_head , ['class' => 'form-select ', 'placeholder' => trans('public.pick_department_head')]) !!}
+                                    {!! Form::select('department_head', $head_options, @$input->department_head , ['class' => 'form-select department_head', 'placeholder' => trans('public.pick_department_head')]) !!}
                                 </div>
                                 @error('department_head')
                                 <div>
@@ -141,7 +141,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@lang('public.close')</button>
-                    <button type="submit" class="btn btn-primary">@lang('public.save')</button>
+                    <button type="submit" name="submit" value="" class="btn btn-primary form_action_btn">@lang('public.save')</button>
                 </div>
             </div>
         </div>
@@ -175,14 +175,44 @@
 @endsection
 @section('script')
     <script>
+        let add_text = "@lang('public.add')";
+        let add_ann = "@lang('public.add_department')";
+        let save_ann = "@lang('public.edit_department')";
+        let save_text = "@lang('public.save')";
         $(document).ready(function() {
             @if($errors->any())
             $('#exampleModal').modal('show');
             @endif
+
             $('.delete_button').on('click', function() {
                 let id = $(this).attr('id');
-                console.log(id);
                 $("#deleteModal .modal-body #id").val(id);
+            });
+
+            $('#addDepartment').click(function () {
+                $(".form_action_btn").text(add_text).val('add');
+                $("#exampleModal .modal-title").text(add_ann);
+            });
+
+            // Handle Delete button click
+            $('.updateDepartment').click(function () {
+                $(".form_action_btn").text(save_text).val('update');
+                $("#exampleModal .modal-title").text(save_ann);
+                let id = $(this).attr('id');
+                $.ajax({
+                    url: '{{ route("get_department_data", ":id") }}'.replace(':id', id),
+                    type: 'GET',
+                    success: function (response) {
+                        console.log(response);
+                        $("#exampleModal .modal-body #id").val(response.id);
+                        $("#exampleModal .modal-body .department_head").val(response.department_head_id);
+                        $("#exampleModal .modal-body #department_name").val(response.name);
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle any errors that occur during the request
+                        console.error(error);
+                    }
+                });
             });
         });
     </script>

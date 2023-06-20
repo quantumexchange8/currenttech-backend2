@@ -248,6 +248,7 @@
                 $(".modal-body #announcement_category").val("");
                 $(".modal-body #message").val("");
                 $(".modal-body #require_participation").prop("checked", false);
+                $('.swap_input').hide();
             });
 
             // Handle Delete button click
