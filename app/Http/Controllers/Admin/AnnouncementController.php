@@ -159,7 +159,9 @@ class AnnouncementController extends Controller
 
     public function getData($id)
     {
-        $data = Announcements::find($id);
+        $data = Announcements::with('user')->find($id);
+        $members_array = explode('-', trim( $data->members, '-'));
+        $data->members = User::whereIn('id', $members_array)->get();
 
         return response()->json($data);
     }

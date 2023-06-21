@@ -21,7 +21,7 @@ return new class extends Migration
             $table->boolean('participation')->default(false);
             $table->date('post_date');
             $table->date('expiration_date');
-
+            $table->string('members');
             $table->timestamps();
             $table->softDeletes();
             $table->unsignedBigInteger('user_id');

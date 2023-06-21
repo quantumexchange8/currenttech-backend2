@@ -37,7 +37,6 @@ return array(
     'department_head' => 'Department Head',
     'department_name' => 'Department Name',
     'no_of_employee' => 'No. of employee',
-    'employment_type' => 'Employment Type',
     'designation' => 'Designation',
     'months' => 'Months',
     'leave_type' => 'Leave Type',
@@ -73,6 +72,7 @@ return array(
     'expiration_date' => 'Expiration Date',
     'posted_on' => 'posted on',
     'view_details' => 'View Details',
+    'view_activity_details' => 'View Activity Details',
     'created_on' => 'Created on',
     'created_by' => 'Created By',
     'project_start_date' => 'Project Start Date',
@@ -250,5 +250,8 @@ return array(
     'delete_project_message' => 'The project details will be deleted permanently!',
     'delete_task_message' => 'The task details will be deleted permanently!',
     'delete_department_message' => 'The department details will be deleted permanently!',
+    'department_members' => 'Department Members',
+    'no_department_member' => '- No Department Members -',
+    'posted_by' => 'Posted By'
 )
 ?>

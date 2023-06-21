@@ -45,7 +45,8 @@
                                                 <div class="card-body">
                                                     <h5 class="card-title">{{$record->title}}</h5>
                                                     <p class="card-text">@lang('public.posted_on') {{$record->post_date}}</p>
-                                                    <button class="btn btn-primary d-flex justify-content-center align-items-center w-100">@lang('public.view_details')
+                                                    <button class="btn btn-primary d-flex justify-content-center align-items-center w-100 view_button" id="{{$record->id}}" data-bs-toggle="modal"
+                                                            data-bs-target="#viewModal">@lang('public.view_details')
                                                     </button>
                                                 </div>
                                             </div>
@@ -220,6 +221,45 @@
                 </div>
             </div>
         </form>
+
+        {{--    view modal--}}
+
+        <div class="modal fade" id="viewModal" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"
+                            id="viewModalLabel">                    @lang('public.view_activity_details')
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="id" id="id" value="{{ @$input->id }}">
+                        <div class="row viewTitle">
+                            <h2 class="text-white">Dinner @ sdfsdfds</h2>
+                        </div>
+                        <div class="row viewDescription">
+                            <p class="text-white">Dinner @ sdfsdfds Dinner @  sdfsdfds sdfsdfds sdfsdfds sdfsdfds sdfsdfds sdfsdfds sdfsdfds sdfsdfds sdfsdfds sdfsdfds sdfsdfds sdfsdfds sdfsdfds sdfsdfds sdfsdfds v sdfsdfds sdfsdfds sdfsdfds sdfsdfds sdfsdfdssdfsdfds sdfsdfds</p>
+                        </div>
+                        <div class="row mt-2  modalImage">
+                            <img src="" id="modalImage" class="img-fluid w-100" alt="Modal Image" style="max-height: 600px">
+                        </div>
+                        <div class="row member_participation mt-3">
+                            <label for="assigned_to" class="form-label">@lang('public.department_members')</label>
+                            <div id="usersContainer">
+
+                            </div>
+                        </div>
+                        <div class="row pt-3 viewPosted">
+                            <p class="text-secondary posted_text">Posted by jasmine lee    10/11/2022 11:43:23</p>
+                        </div>
+
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
 @endsection
 @section('script')
     <script>
@@ -285,6 +325,52 @@
                         console.error(error);
                     }
                 });
+            });
+
+            $('.view_button').on('click', function() {
+                let id = $(this).attr('id');
+                $('.viewTitle').empty();
+                $('.viewDescription').empty();
+
+                $.ajax({
+                    url: '{{ route("get_announcement_data", ":id") }}'.replace(':id', id),
+                    type: 'GET',
+                    success: function(response) {
+
+                        let user_id = response.user.id;
+
+                        if (response.attachment) {
+                            $('#modalImage').attr('src',  '{{ asset('uploads/announcements') }}' + '/' + response.attachment);
+                            $(".modalImage").show();
+                        } else {
+                            $('#modalImage').attr('src', '');
+                            $(".modalImage").hide();
+                        }
+                        $('.viewTitle').append($('<h2>').addClass('text-white').text(response.title));
+                        $('.viewDescription').append($('<p>').addClass('text-white').text(response.messages));
+                        let routeUrl = '{{ route("employee_detail", ["id" => ":id"]) }}';
+                        routeUrl = routeUrl.replace(':id', response.user.id);
+                        $('.posted_text').html('@lang("public.posted_by") <a href="' + routeUrl + '">' + response.user.name + '</a> ' + response.created_at);
+
+                        let usersContainer = $('#usersContainer');
+                        usersContainer.empty();
+                        if (response.members.length === 0) {
+                            $('.member_participation').hide();
+                        } else {
+                            $('.member_participation').show();
+                        }
+                        $.each(response.members, function(index, item) {
+                            var newDiv = $('<div>').addClass('text-white pt-2').text(item.name);
+                            usersContainer.append(newDiv);
+                        });
+
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle any errors that occur during the request
+                        console.error(error);
+                    }
+                });
+
             });
         });
     </script>

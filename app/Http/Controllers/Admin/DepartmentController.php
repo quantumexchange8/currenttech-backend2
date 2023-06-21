@@ -95,7 +95,7 @@ class DepartmentController extends Controller
 
     public function getData($id)
     {
-        $data = Departments::with('head')->find($id);
+        $data = Departments::with('head', 'members')->find($id);
 
         return response()->json($data);
     }

@@ -57,7 +57,8 @@
                                                 <button type="button" class="btn me-1">
                                                     <i class="fa fa-trash text-danger delete_button"  id="{{$record->id}}" data-bs-toggle="modal" data-bs-target="#deleteModal"></i>
                                                 </button>
-                                                <button type="button" class="btn">
+                                                <button type="button" class="btn view_button" id="{{$record->id}}" data-bs-toggle="modal"
+                                                        data-bs-target="#viewModal">
                                                     <i class="fa fa-eye" style="color: rgba(53, 57, 114, 1)"></i>
                                                 </button>
                                             </div>
@@ -172,6 +173,32 @@
             </div>
         </div>
     </form>
+
+    {{--    view modal--}}
+
+    <div class="modal fade" id="viewModal" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"
+                        id="viewModalLabel">                    @lang('public.view_details')
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="id" id="id" value="{{ @$input->id }}">
+                    <div class="row">
+                        <label for="assigned_to" class="form-label department_member_list">@lang('public.department_members')</label>
+                        <div id="usersContainer">
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
 @endsection
 @section('script')
     <script>
@@ -179,6 +206,10 @@
         let add_ann = "@lang('public.add_department')";
         let save_ann = "@lang('public.edit_department')";
         let save_text = "@lang('public.save')";
+        let dept_member = "@lang('public.department_members')";
+        let no_dept = "@lang('public.no_department_member')";
+
+
         $(document).ready(function() {
             @if($errors->any())
             $('#exampleModal').modal('show');
@@ -203,7 +234,6 @@
                     url: '{{ route("get_department_data", ":id") }}'.replace(':id', id),
                     type: 'GET',
                     success: function (response) {
-                        console.log(response);
                         $("#exampleModal .modal-body #id").val(response.id);
                         $("#exampleModal .modal-body .department_head").val(response.department_head_id);
                         $("#exampleModal .modal-body #department_name").val(response.name);
@@ -213,6 +243,35 @@
                         console.error(error);
                     }
                 });
+            });
+
+            $('.view_button').on('click', function() {
+                let id = $(this).attr('id');
+
+                $.ajax({
+                    url: '{{ route("get_department_data", ":id") }}'.replace(':id', id),
+                    type: 'GET',
+                    success: function(response) {
+                        let usersContainer = $('#usersContainer');
+                        usersContainer.empty();
+                        console.log(response.members);
+                        if (response.members.length === 0) {
+                            $('.department_member_list').text(no_dept);
+                        } else {
+                            $('.department_member_list').text(dept_member);
+                        }
+                        $.each(response.members, function(index, item) {
+                            var newDiv = $('<div>').addClass('text-white pt-2').text(item.name);
+                            usersContainer.append(newDiv);
+                        });
+
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle any errors that occur during the request
+                        console.error(error);
+                    }
+                });
+
             });
         });
     </script>
