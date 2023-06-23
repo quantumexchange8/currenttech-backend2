@@ -100,10 +100,10 @@
                                             <a><i class="fa fa-info-circle text-primary fa-lg me-2"></i>@lang('public.planned')</a>
                                         </div>
                                         <div class="col-auto">
-                                            <a><i class="fa fa-search text-secondary fa-lg me-2"></i>@lang('public.in_progress')</a>
+                                            <a><i class="fa fa-clock text-warning fa-lg me-2"></i>@lang('public.in_progress')</a>
                                         </div>
                                         <div class="col-auto">
-                                            <a><i class="fa fa-check-circle text-success fa-lg me-2"></i>@lang('public.completed')</a>
+                                            <a><i class="fa fa-search text-secondary fa-lg me-2"></i>@lang('public.under_review')</a>
                                         </div>
                                         <div class="col-auto">
                                             <a><i class="fa fa-check-circle text-success fa-lg me-2"></i>@lang('public.completed')</a>
@@ -141,7 +141,7 @@
                                 <td class="d-table-cell w-auto">
                                     <div class="btn-group btn-group-sm" role="group" aria-label="Button Group">
                                         <button type="button" class="btn">
-                                            <i class="fa fa-pencil text-success"></i>
+                                            <i class="fa fa-pencil text-success  updateTask" id={{$record->id}} data-bs-toggle="modal" data-bs-target="#exampleModal"></i>
                                         </button>
                                         <button type="button" class="btn me-1">
                                             <i class="fa fa-trash text-danger delete_button"  id="{{$record->id}}" data-bs-toggle="modal" data-bs-target="#deleteModal"></i>
@@ -326,15 +326,50 @@
         let save_ann = "@lang('public.edit_project')";
         let save_text = "@lang('public.save')";
         $(document).ready(function () {
-            @if($errors->any())
-            $('#exampleModal').modal('show');
-            @endif
+
             $('.delete_button').on('click', function() {
                 let id = $(this).attr('id');
                 $("#deleteModal .modal-body #id").val(id);
             });
 
-            $('#project_name').on('change', function() {
+            $('#addProject').click(function () {
+                $('#submit_form').attr('action', '{{ route('tasks_index') }}');
+                $(".form_action_btn").text(add_text).val('add');
+                $("#exampleModal .modal-title").text(add_ann);
+
+            });
+
+            // Handle Delete button click
+            $('.updateTask').click(function () {
+                $('#submit_form').attr('action', '{{ route('tasks_index') }}');
+                $(".form_action_btn").text(save_text).val('update');
+                $("#exampleModal .modal-title").text(save_ann);
+                let id = $(this).attr('id');
+                $.ajax({
+                    url: '{{ route("get_task_data", ":id") }}'.replace(':id', id),
+                    type: 'GET',
+                    success: function (response) {
+                        console.log(response);
+                        $("#exampleModal .modal-body #id").val(response.id);
+                        $("#exampleModal .modal-body #project_name").val(response.project_id);
+                        $("#exampleModal .modal-body #task_name").val(response.name);
+                        $("#exampleModal .modal-body #task_description").val(response.description);
+                        $("#exampleModal .modal-body #due_date").val(response.formatted_due_date);
+                        $("#exampleModal .modal-body #notification_sent").val(response.notification_target);
+                        triggerChange([response.assigned]);
+
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle any errors that occur during the request
+                        console.error(error);
+                    }
+                });
+            });
+
+            $('#project_name').on('change', function(event, assigned_member) {
+                if (typeof assigned_member === 'undefined') {
+                    assigned_member = []; // Set assigned_member as an empty array
+                }
                 let selectedOption = $(this).val();
 
                 // Make the API call with the selected option
@@ -353,10 +388,15 @@
 
                             // Loop through the retrieved users and append the content to the container
                             $.each(users, function(index, user) {
+                                let isChecked = assigned_member.includes(String(user.id));
+                                console.log(assigned_member);
+                                console.log(user.id);
+                                console.log(isChecked)
                                 var checkbox = $('<input>').attr({
                                     type: 'checkbox',
                                     name: 'assigned_to[]',
-                                    value: user.id
+                                    value: user.id,
+                                    checked: isChecked
                                 });
 
                                 var label = $('<label>').append(checkbox);
@@ -377,48 +417,14 @@
                 }
             });
 
-            $('#addProject').click(function () {
-                $('#submit_form').attr('action', '{{ route('tasks_index') }}');
-                $(".form_action_btn").text(add_text);
-                $(".modal-title").text(add_ann);
+            function triggerChange(assigned_member) {
+                $('#project_name').trigger('change', assigned_member);
+            }
 
-            });
-
-            // Handle Delete button click
-            $('.updateAnnouncement').click(function () {
-                $('#submit_form').attr('action', '{{ route('update_announcement') }}');
-                $(".form_action_btn").text(save_text);
-                $(".modal-title").text(save_ann);
-                {{--let id = $(this).attr('id');--}}
-                {{--$.ajax({--}}
-                {{--    url: '{{ route("get_announcement_data", ":id") }}'.replace(':id', id),--}}
-                {{--    type: 'GET',--}}
-                {{--    success: function (response) {--}}
-                {{--        $(".modal-body #id").val(response.id);--}}
-                {{--        $(".modal-body #title").val(response.title);--}}
-                {{--        $(".modal-body #post_date").val(response.post_date);--}}
-                {{--        $(".modal-body #expiration_date").val(response.expiration_date);--}}
-                {{--        $(".modal-body #announcement_category").val(response.category);--}}
-                {{--        $(".modal-body #message").val(response.messages);--}}
-                {{--        if (response.participation === 1) {--}}
-                {{--            // Code to execute if the condition is true--}}
-                {{--            $(".modal-body #require_participation").prop("checked", true);--}}
-                {{--        } else {--}}
-                {{--            $(".modal-body #require_participation").prop("checked", false);--}}
-                {{--        }--}}
-                {{--        if (response.attachment) {--}}
-                {{--            $('.swap_input a').attr('href', '{{ asset('uploads/announcements') }}' + '/' + response.attachment).show();--}}
-                {{--        } else {--}}
-                {{--            $('.swap_input').hide();--}}
-                {{--        }--}}
-
-                {{--    },--}}
-                {{--    error: function (xhr, status, error) {--}}
-                {{--        // Handle any errors that occur during the request--}}
-                {{--        console.error(error);--}}
-                {{--    }--}}
-                {{--});--}}
-            });
+            @if($errors->any())
+            $('#exampleModal').modal('show');
+            triggerChange();
+            @endif
         });
     </script>
 @endsection

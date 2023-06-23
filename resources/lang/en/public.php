@@ -139,6 +139,7 @@ return array(
     'pick_department_head' => 'Pick a department head!',
     'successfully_added_department' => 'Successfully added a new department!',
     'successfully_updated_department' => 'Successfully updated department!',
+    'successfully_updated_task' => 'Successfully updated task!',
     'success' => 'Action Success',
     'contact_information' => 'Contact Information',
     'home_address' => 'Home Address',

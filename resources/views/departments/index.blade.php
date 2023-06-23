@@ -254,7 +254,6 @@
                     success: function(response) {
                         let usersContainer = $('#usersContainer');
                         usersContainer.empty();
-                        console.log(response.members);
                         if (response.members.length === 0) {
                             $('.department_member_list').text(no_dept);
                         } else {

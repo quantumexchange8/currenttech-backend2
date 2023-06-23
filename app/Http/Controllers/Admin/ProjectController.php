@@ -31,7 +31,8 @@ class ProjectController extends Controller
             $submit_type = $request->input('submit');
 
             switch ($submit_type) {
-                case 'create':
+                case 'add':
+                case 'update':
                     $validator = Validator::make($request->all(), [
                         'project_name' => 'required',
                         'due_date' => 'required|date|after:today',
@@ -51,18 +52,37 @@ class ProjectController extends Controller
                     if (!$validator->fails()) {
                         $values = array_values($request->assigned_to);
                         $assigned_to = '-' . implode('-', $values) . '-';
-                        $task = Tasks::create([
-                            'name' => $request->input('task_name'),
-                            'description' => $request->input('task_description'),
-                            'due_date' => $request->input('due_date'),
-                            'notification_target' => $request->input('notification_sent'),
-                            'members' => $assigned_to,
-                            'user_id' => $auth_user->id,
-                            'project_id' => $request->input('project_name')
-                        ]);
+
+                        if ($submit_type == 'add') {
+                            $task = Tasks::create([
+                                'name' => $request->input('task_name'),
+                                'description' => $request->input('task_description'),
+                                'due_date' => $request->input('due_date'),
+                                'notification_target' => $request->input('notification_sent'),
+                                'members' => $assigned_to,
+                                'user_id' => $auth_user->id,
+                                'project_id' => $request->input('project_name')
+                            ]);
 
 
-                        Alert::success(trans('public.success'), trans('public.successfully_created_task'));
+                            Alert::success(trans('public.success'), trans('public.successfully_created_task'));
+                        } else {
+                            $task = Tasks::find($request->id);
+
+                            $update_info = [
+                                'name' => $request->input('task_name'),
+                                'description' => $request->input('task_description'),
+                                'due_date' => $request->input('due_date'),
+                                'notification_target' => $request->input('notification_sent'),
+                                'members' => $assigned_to,
+                                'user_id' => $auth_user->id,
+                                'project_id' => $request->input('project_name')
+                            ];
+
+                            $task->update($update_info);
+                            Alert::success(trans('public.success'), trans('public.successfully_updated_task'));
+                        }
+
                         return redirect()->route('tasks_index');
                     }
 
@@ -337,6 +357,10 @@ class ProjectController extends Controller
     {
         $data = Tasks::find($id);
 
+        $data->assigned = explode('-', trim( $data->members, '-'));
+
+        $formattedCreatedAt = Carbon::parse($data->due_date)->format('Y-m-d');
+        $data->formatted_due_date = $formattedCreatedAt;
         return response()->json($data);
     }
 
