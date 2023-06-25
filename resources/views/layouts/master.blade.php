@@ -50,6 +50,8 @@
         input[type=file]::file-selector-button:hover {
             background-color: rgba(19, 17, 28, 1);
         }
+
+
     </style>
 
     <!-- Scripts -->

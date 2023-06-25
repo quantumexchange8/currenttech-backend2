@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'test')
+@section('title', $title)
 
 @section('content')
     <div class="main-panel">
@@ -399,7 +399,7 @@
                     @if($errors->any())
                     $('#exampleModal').modal('show');
                     @endif
-                    
+
                 });
             </script>
 @endsection

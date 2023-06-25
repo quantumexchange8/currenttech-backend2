@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\Departments;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use RealRashid\SweetAlert\Facades\Alert;
+use Spatie\Permission\Models\Permission;
 
 class AdminController extends Controller
 {
@@ -47,7 +49,7 @@ class AdminController extends Controller
 
 
         return view('admin.index', [
-            'title' => trans('public.department'),
+            'title' => trans('public.sub_admin'),
             'input' => $input,
             'records' => $admins,
             'admin_options' => $users_without_admin->pluck('name', 'id')->toArray(),
@@ -58,5 +60,61 @@ class AdminController extends Controller
         ])->withErrors($validator);
     }
 
+    public function detail($id )
+    {
+            $user = User::find($id);
+
+
+        $permissions = Permission::all()->pluck('name', 'id')->toArray();
+
+        return view('admin.detail', [
+            'title' => trans('public.sub_admin_permission'),
+            'permissions' =>  array_chunk($permissions, ceil(count($permissions) / 2)),
+            'user_permissions' => $user->getPermissionNames()->toArray(),
+            'user' => $user,
+        ]);
+    }
+
+    public function updatePermissions(Request $request, $id)
+    {
+        // Retrieve data from the request
+        $permission = $request->input('permission');
+
+        $user = User::find($id);
+        $submit_type = $request->input('type');
+
+        switch ($submit_type) {
+            case 'give':
+                $user->givePermissionTo($permission);
+                break;
+            case 'revoke':
+                $user->revokePermissionTo($permission);
+                break;
+        }
+
+        $response = [
+            'status' => 'success',
+            'message' => 'Permission updated',
+        ];
+
+        // Return the response as JSON
+        return response()->json($response);
+    }
+
+    //TODO::apply the function during the edit function
+//    function transferPermissions(User $userA, User $userB)
+//    {
+//        // Get all permissions assigned to User A
+//        $permissions = $userA->permissions;
+//
+//        // Sync the permissions to User B
+//        $userB->syncPermissions($permissions);
+//
+//        // Optionally, you can also remove the permissions from User A
+//        $userA->syncPermissions([]);
+//
+//        // Return true to indicate the transfer was successful
+//        return true;
+//    }
 
 }

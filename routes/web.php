@@ -65,6 +65,8 @@ Route::group(['middleware' => 'auth'], function () {
         });
         Route::controller(AdminController::class)->group(function () {
             Route::match(['get', 'post'], '/subadmin', 'index')->name('admin_index');
+            Route::get('/admin_detail/{id}', 'detail')->name('admin_detail');
+            Route::post('/update_permissions/{id}', 'updatePermissions')->name('update_permissions');
         });
         Route::controller(DepartmentController::class)->group(function () {
             Route::match(['get', 'post'], '/departments', 'index')->name('departments_index');

@@ -21,6 +21,7 @@ class LoginController extends Controller
         $credentials = [
             'employee_id' => $request['username'],
             'password' => $request['password'],
+            'admin_status' => true,
         ];
         if (Auth::attempt($credentials)) {
             // dd($credentials);

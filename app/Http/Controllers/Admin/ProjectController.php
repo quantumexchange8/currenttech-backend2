@@ -49,6 +49,7 @@ class ProjectController extends Controller
                         'assigned_to' =>  trans('public.assigned_to'),
                     ]);
 
+
                     if (!$validator->fails()) {
                         $values = array_values($request->assigned_to);
                         $assigned_to = '-' . implode('-', $values) . '-';
@@ -103,8 +104,9 @@ class ProjectController extends Controller
                         }
                     }
                     session(['tasks_history_search' => [
-                        'employee_id' => $request->input('employee_id'),
-                        'employee_name' => $request->input('employee_name'),
+                        'project_name' => $request->input('project_name'),
+                        'project_category' => $request->input('project_category'),
+                        'status' => $request->input('status'),
                         'start_date' => $start_date,
                         'end_date' => $end_date,
                     ]]);
@@ -127,6 +129,19 @@ class ProjectController extends Controller
             'input' => $input,
             'projects' => Projects::all()->pluck('name', 'id')->toArray(),
             'search'=> $search,
+            'categories' => array(
+                Projects::CATEGORY_NEW => trans('public.new'),
+                Projects::CATEGORY_ENHANCEMENT => trans('public.enhancement'),
+                Projects::CATEGORY_MODIFICATION => trans('public.modification'),
+                Projects::CATEGORY_TECHNICAL => trans('public.technical_issue'),
+            ),
+            'statuses' => array(
+                Tasks::STATUS_PLANNED=> trans('public.planned'),
+                Tasks::STATUS_IN_PROGRESS => trans('public.in_progress'),
+                Tasks::STATUS_UNDER_REVIEW => trans('public.under_review'),
+                Tasks::STATUS_COMPLETED => trans('public.completed'),
+                Tasks::STATUS_OVERDUE => trans('public.overdue'),
+            ),
 
         ])->withErrors($validator);
 
@@ -387,7 +402,7 @@ class ProjectController extends Controller
 
         if (!$task) {
             Alert::error(trans('public.invalid_task'), trans('public.try_again'));
-            return redirect('tasks_index');
+            return redirect()->route('tasks_index');
         }
 
         $task->delete();

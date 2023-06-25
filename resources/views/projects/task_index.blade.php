@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'test')
+@section('title', $title)
 
 @section('content')
     <div class="main-panel">
@@ -27,59 +27,65 @@
                         </button>
 
 
-                        <div class="btn-group" role="group">
-                            <input type="radio" class="btn-check" name="btnradio" id="btnradio1" checked>
-                            <label id="monthly" class="btn btn-outline-primary" for="btnradio1" data-value="all">@lang('public.all')</label>
+{{--                        <div class="btn-group" role="group">--}}
+{{--                            <input type="radio" class="btn-check" name="btnradio" id="btnradio1" checked>--}}
+{{--                            <label id="monthly" class="btn btn-outline-primary" for="btnradio1" data-value="all">@lang('public.all')</label>--}}
 
-                            <input type="radio" class="btn-check" name="btnradio" id="btnradio2">
-                            <label class="btn btn-outline-primary" for="btnradio2" data-value="1">@lang('public.planned')</label>
+{{--                            <input type="radio" class="btn-check" name="btnradio" id="btnradio2">--}}
+{{--                            <label class="btn btn-outline-primary" for="btnradio2" data-value="1">@lang('public.planned')</label>--}}
 
-                            <input type="radio" class="btn-check" name="btnradio" id="btnradio3">
-                            <label class="btn btn-outline-primary" for="btnradio3" data-value="2">@lang('public.in_progress')</label>
+{{--                            <input type="radio" class="btn-check" name="btnradio" id="btnradio3">--}}
+{{--                            <label class="btn btn-outline-primary" for="btnradio3" data-value="2">@lang('public.in_progress')</label>--}}
 
-                            <input type="radio" class="btn-check" name="btnradio" id="btnradio4">
-                            <label class="btn btn-outline-primary" for="btnradio4" data-value="3">@lang('public.in_progress')</label>
+{{--                            <input type="radio" class="btn-check" name="btnradio" id="btnradio4">--}}
+{{--                            <label class="btn btn-outline-primary" for="btnradio4" data-value="3">@lang('public.in_progress')</label>--}}
 
-                            <input type="radio" class="btn-check" name="btnradio" id="btnradio5">
-                            <label class="btn btn-outline-primary" for="btnradio5" data-value="4">@lang('public.completed')</label>
+{{--                            <input type="radio" class="btn-check" name="btnradio" id="btnradio5">--}}
+{{--                            <label class="btn btn-outline-primary" for="btnradio5" data-value="4">@lang('public.completed')</label>--}}
 
-                            <input type="radio" class="btn-check" name="btnradio" id="btnradio6">
-                            <label class="btn btn-outline-primary" for="btnradio6" data-value="5">@lang('public.overdue')</label>
-                        </div>
+{{--                            <input type="radio" class="btn-check" name="btnradio" id="btnradio6">--}}
+{{--                            <label class="btn btn-outline-primary" for="btnradio6" data-value="5">@lang('public.overdue')</label>--}}
+{{--                        </div>--}}
                     </div>
                     <div class="col-11 d-flex justify-content-start my-3">
                         <form method="post" id="filter_form" action="{{ route('tasks_index') }}">
                             @csrf
                             <div class="row">
                                 <input type="hidden" id="filter_status" name="filter_status">
-                                <div class="col-2">
-                                    <label for="employee_id" class="form-label">
-                                        @lang('public.employee_id')
-                                        <input type="text" class="form-control" id="employee_id" name="employee_id"  value="{{ @$search['employee_id'] }}">
+                                <div class="col">
+                                    <label for="project_name" class="form-label">
+                                        @lang('public.project_name')
+                                        <input type="text" class="form-control" id="project_name" name="project_name"  value="{{ @$search['project_name'] }}">
                                     </label>
                                 </div>
-                                <div class="col-2">
-                                    <label for="employee_name" class="form-label">
-                                        @lang('public.employee_name')
-                                        <input type="text" class="form-control" id="employee_name" name="employee_name"  value="{{ @$search['employee_name'] }}">
-                                    </label>
+                                <div class="col">
+                                    <label for="project_category" class="mb-0 ">@lang('public.project_category')</label>
+                                    <div class="input-group">
+                                    {!! Form::select('project_category', $categories, @$input->project_category , ['class' => 'form-select', 'id' => 'project_category', 'placeholder' => trans('public.pick_project_category')]) !!}
+                                    </div>
                                 </div>
-                                <div class="col-2">
+                                <div class="col">
                                     <label for="start_date" class="form-label">
                                         @lang('public.from_date')
                                         <input type="date" class="form-control" id="start_date" name="start_date"  value="{{ @$search['start_date'] }}">
                                     </label>
                                 </div>
-                                <div class="col-2">
+                                <div class="col">
                                     <label for="end_date" class="form-label">
                                         @lang('public.to_date')
                                         <input type="date" class="form-control" id="end_date" name="end_date"  value="{{ @$search['end_date'] }}">
                                     </label>
                                 </div>
-                                <div class="col-1">
+                                <div class="col">
+                                    <label for="status" class="mb-0 ">@lang('public.status')</label>
+                                    <div class="input-group">
+                                        {!! Form::select('status', $statuses, @$input->status , ['class' => 'form-select', 'id' => 'status', 'placeholder' => trans('public.pick_status')]) !!}
+                                    </div>
+                                </div>
+                                <div class="col">
                                     <button class="btn btn-primary submit_form_button mt-4 mx-0" type="submit" name="submit" value="search">@lang('public.search')</button>
                                 </div>
-                                <div class="col-1">
+                                <div class="col">
                                     <button class="btn btn-danger mt-4 mx-0" type="submit" name="submit" value="reset">@lang('public.clear')</button>
                                 </div>
                             </div>
@@ -134,7 +140,7 @@
                                 <td>{{$record->project->getType()}}</td>
                                 <td>{{$record->name}}</td>
                                 <td>{{$record->user->name}}</td>
-                                <td>{{ \Carbon\Carbon::parse($record->created_at)->format('Y-m-d') }}</td>
+                                <td>{{ \Carbon\Carbon::parse($record->due_date)->format('Y-m-d') }}</td>
                                 <td>
                                     <a><i class="{{$record->getStatus()['class']}}"></i></a>
                                 </td>
@@ -160,7 +166,7 @@
                         </table>
                         @else
                             <caption class="text-secondary">
-                                <div class="flex text-black text-small" role="alert">
+                                <div class="flex text-small" role="alert">
                                     <span class="sr-only">@lang('public.info')</span>
                                     <div>
                                         <span class="font-medium">@lang('public.info') :</span>@lang('public.no_record')
@@ -195,7 +201,7 @@
                                 <label for="project_name"
                                        class="form-label">@lang('public.project_name')</label>
                                 <div class="input-group">
-                                    {!! Form::select('project_name', $projects, @$input->project_name , ['class' => 'form-select', 'id' => 'project_name', 'placeholder' => trans('public.pick_project_name')]) !!}
+                                    {!! Form::select('project_name', $projects, @$input->project_name , ['class' => 'form-select', 'id' => 'project_name_post', 'placeholder' => trans('public.pick_project_name')]) !!}
                                 </div>
                                 @error('project_name')
                                 <div>
@@ -327,6 +333,65 @@
         let save_text = "@lang('public.save')";
         $(document).ready(function () {
 
+            $('#project_name_post').on('change', function(event, assigned_member) {
+                console.log(122131233);
+                if (typeof assigned_member === 'undefined') {
+                    assigned_member = []; // Set assigned_member as an empty array
+                }
+                let selectedOption = $(this).val();
+
+                // Make the API call with the selected option
+                if (selectedOption !== '') {
+                    $.ajax({
+                        url: '{{ route("get_project_data", ":id") }}'.replace(':id', selectedOption),
+                        type: 'GET',
+                        success: function (response) {
+
+
+                            var users = response;
+                            var usersContainer = $('#usersContainer');
+
+                            // Clear any existing content in the container
+                            usersContainer.empty();
+
+                            // Loop through the retrieved users and append the content to the container
+                            $.each(users, function(index, user) {
+                                let isChecked = assigned_member.includes(String(user.id));
+                                var checkbox = $('<input>').attr({
+                                    type: 'checkbox',
+                                    name: 'assigned_to[]',
+                                    value: user.id,
+                                    checked: isChecked
+                                });
+
+                                var label = $('<label>').append(checkbox);
+
+                                var div = $('<div>').addClass('input-group').append(
+                                    label,
+                                    $('<div>').addClass('ps-2').text(user.name)
+                                );
+
+                                usersContainer.append(div);
+                            });
+                        },
+                        error: function (xhr, status, error) {
+                            // Handle any errors that occur during the request
+                            console.error(error);
+                        }
+                    });
+                }
+            });
+
+            function triggerChange(assigned_member) {
+                $('#project_name_post').trigger('change', assigned_member);
+            }
+
+            @if($errors->any())
+            $('#exampleModal').modal('show');
+            triggerChange();
+            @endif
+
+
             $('.delete_button').on('click', function() {
                 let id = $(this).attr('id');
                 $("#deleteModal .modal-body #id").val(id);
@@ -336,7 +401,6 @@
                 $('#submit_form').attr('action', '{{ route('tasks_index') }}');
                 $(".form_action_btn").text(add_text).val('add');
                 $("#exampleModal .modal-title").text(add_ann);
-
             });
 
             // Handle Delete button click
@@ -366,65 +430,6 @@
                 });
             });
 
-            $('#project_name').on('change', function(event, assigned_member) {
-                if (typeof assigned_member === 'undefined') {
-                    assigned_member = []; // Set assigned_member as an empty array
-                }
-                let selectedOption = $(this).val();
-
-                // Make the API call with the selected option
-                if (selectedOption !== '') {
-                    $.ajax({
-                        url: '{{ route("get_project_data", ":id") }}'.replace(':id', selectedOption),
-                        type: 'GET',
-                        success: function (response) {
-
-
-                            var users = response;
-                            var usersContainer = $('#usersContainer');
-
-                            // Clear any existing content in the container
-                            usersContainer.empty();
-
-                            // Loop through the retrieved users and append the content to the container
-                            $.each(users, function(index, user) {
-                                let isChecked = assigned_member.includes(String(user.id));
-                                console.log(assigned_member);
-                                console.log(user.id);
-                                console.log(isChecked)
-                                var checkbox = $('<input>').attr({
-                                    type: 'checkbox',
-                                    name: 'assigned_to[]',
-                                    value: user.id,
-                                    checked: isChecked
-                                });
-
-                                var label = $('<label>').append(checkbox);
-
-                                var div = $('<div>').addClass('input-group').append(
-                                    label,
-                                    $('<div>').addClass('ps-2').text(user.name)
-                                );
-
-                                usersContainer.append(div);
-                            });
-                        },
-                        error: function (xhr, status, error) {
-                            // Handle any errors that occur during the request
-                            console.error(error);
-                        }
-                    });
-                }
-            });
-
-            function triggerChange(assigned_member) {
-                $('#project_name').trigger('change', assigned_member);
-            }
-
-            @if($errors->any())
-            $('#exampleModal').modal('show');
-            triggerChange();
-            @endif
         });
     </script>
 @endsection

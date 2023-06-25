@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'test')
+@section('title', $title)
 
 @section('content')
     <div class="main-panel">
@@ -80,7 +80,7 @@
                             </table>
                         @else
                             <caption class="text-secondary">
-                                <div class="flex text-black text-small" role="alert">
+                                <div class="flex text-small" role="alert">
                                     <span class="sr-only">@lang('public.info')</span>
                                     <div>
                                         <span class="font-medium">@lang('public.info') :</span>@lang('public.no_record')

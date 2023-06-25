@@ -28,49 +28,33 @@ class Tasks extends Model
     {
 
         $query = Tasks::query();
-        $name_array = [];
-        $id_array = [];
+        $search_text = @$search['project_name'] ?? NULL;
+        $freetext = explode(' ', $search_text);
 
-        $employee_id = @$search['employee_id'] ?? NULL;
-        if ($employee_id !== null) {
-            $employee_id = explode(' ', $employee_id);
-        }
-        $employee_name = @$search['employee_name'] ?? NULL;
-        if ($employee_name !== null) {
-            $employee_name = explode(' ', $employee_name);
-        }
-        if(!empty($employee_name)){
-            $name_array = self::query()->where(function ($query) use ($employee_name) {
-                foreach($employee_name as $freetexts) {
-                    $query->whereHas('user', function ($q) use ($freetexts) {
-                        $q->where('name', 'like', '%' . $freetexts . '%');
-                    });
-                }
-            })->pluck('user_id')->unique()->toArray();
-        }
-        if($employee_id){
-            $id_array = self::query()->where(function ($query) use ($employee_id) {
-                foreach($employee_id as $freetexts) {
-                    $query->whereHas('user', function ($q) use ($freetexts) {
-                        $q->where('employee_id', 'like', '%' . $freetexts . '%');
-                    });
-                }
-            })->pluck('user_id')->unique()->toArray();
-        }
-
-        $combinedUniqueArray = array_unique(array_merge($name_array, $id_array));
-
-        if ($combinedUniqueArray) {
-            $query->whereHas('user', function ($q) use ($combinedUniqueArray) {
-                $q->whereIn('id', $combinedUniqueArray);
-            });
+        if($search_text){
+            foreach($freetext as $freetexts) {
+                $query->whereHas('project', function ($q) use ($freetexts) {
+                    $q->where('name', 'like', '%' . $freetexts . '%');
+                });
+            }
         }
 
 
         if (@$search['start_date'] && @$search['end_date']) {
             $start_date = Carbon::parse(@$search['start_date'])->startOfDay()->format('Y-m-d H:i:s');
             $end_date = Carbon::parse(@$search['end_date'])->endOfDay()->format('Y-m-d H:i:s');
-            $query->whereBetween('created_at', [$start_date, $end_date]);
+            $query->whereBetween('due_date', [$start_date, $end_date]);
+        }
+
+        $category = @$search['project_category'] ?? NULL;
+        if ($category) {
+            $query->whereHas('project', function ($q) use ($category) {
+                $q->where('category', $category);
+            });
+        }
+
+        if (@$search['status'] ) {
+            $query->where('status', @$search['status']);
         }
 
         return $query->orderbyDesc('created_at');

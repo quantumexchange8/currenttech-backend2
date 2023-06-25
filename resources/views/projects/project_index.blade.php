@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'test')
+@section('title', $title)
 
 @section('content')
     <div class="main-panel">

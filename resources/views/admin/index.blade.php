@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'test')
+@section('title',  $title )
 
 @section('content')
     <div class="main-panel">
@@ -72,7 +72,9 @@
                                                     <i class="fa fa-trash text-danger"></i>
                                                 </button>
                                                 <button type="button" class="btn">
-                                                    <i class="fa fa-eye" style="color: rgba(53, 57, 114, 1)"></i>
+                                                    <a href="{{ route('admin_detail', ['id' => $record->id]) }}"  style="color: rgba(53, 57, 114, 1)">
+                                                        <i class="fa fa-eye"></i>
+                                                    </a>
                                                 </button>
                                             </div>
                                         </td>
@@ -182,7 +184,6 @@
                     url: '{{ route("get_user_data", ":id") }}'.replace(':id', id),
                     type: 'GET',
                     success: function (response) {
-                        console.log()
                         let adminType = response.admin_type;
 
                         $(".modal-body #admin_id").val(response.name);
