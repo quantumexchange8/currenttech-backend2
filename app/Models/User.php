@@ -69,15 +69,15 @@ class User extends Authenticatable
      */
     public static function getAdminType($type)
     {
-        switch ($type) {
-
-            case self::TYPE_SUBADMIN:
-                return trans('public.sub_admin');
-
-            default:
-                return trans('public.super_admin');
-        }
+        return match ($type) {
+            self::TYPE_SUBADMIN => trans('public.sub_admin'),
+            default => trans('public.super_admin'),
+        };
     }
+
+
+
+
 
     /**
      *   Return list of status codes and labels
@@ -178,6 +178,18 @@ class User extends Authenticatable
         $temp_code = substr('CT0000', 0, 6 - strlen((string)$this->id));
         $this->employee_id = $temp_code . $this->id;
         $this->save();
+    }
+
+    public function getEmploymentType()
+    {
+        return match ($this->employment_type) {
+            self::EMPLOYMENT_TYPE_PERMENANT => trans('public.permanent'),
+            self::EMPLOYMENT_TYPE_PROBATION => trans('public.probation'),
+            self::EMPLOYMENT_TYPE_PARTIME => trans('public.part_timer'),
+            self::EMPLOYMENT_TYPE_FREELANCER => trans('public.freelancer'),
+            self::EMPLOYMENT_TYPE_INTERN => trans('public.internship'),
+            default => trans('public.permanent'),
+        };
     }
 
     public function department()

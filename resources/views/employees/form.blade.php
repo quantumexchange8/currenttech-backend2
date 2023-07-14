@@ -114,7 +114,7 @@
                                         <label for="passport_foreigner" class="form-label">@lang('public.passport_foreigner')</label>
                                         <div class="input-group">
                                             <input type="text" class="form-control" id="passport_foreigner" name="passport_foreigner"
-                                                   required="required"
+
                                                    aria-label="passport_foreigner" aria-describedby="basic-addon2"
                                                    value="{{ @$input->passport_foreigner }}">
 
@@ -190,7 +190,7 @@
                                     <label for="email_address" class="form-label">@lang('public.email_address')</label>
                                     <div class="input-group">
                                         <input type="text" class="form-control" id="email_address" name="email_address"
-                                               required="required"
+
                                                aria-label="ic_number" aria-describedby="basic-addon2"
                                                value="{{ @$input->email_address }}">
 
@@ -517,7 +517,7 @@
                                 <div class="form-group w-100">
                                     <label for="agreement_of_offer_letter" class="form-label">@lang('public.agreement_of_offer_letter')</label>
                                     @if(!empty($input->agreement_of_offer_letter))
-                                        <a href="{{ asset('uploads/users/permanent_attachment/'.$input->agreement_of_offer_letter ) }}" download>Download Offer Letter Attachment</a>
+                                        <a href="{{ asset('uploads/users/offer_letter/'.$input->agreement_of_offer_letter ) }}" download>Download Offer Letter Attachment</a>
                                     @endif
                                     <div class="input-group">
                                         <input type="file" class="form-control" id="agreement_of_offer_letter" name="agreement_of_offer_letter"

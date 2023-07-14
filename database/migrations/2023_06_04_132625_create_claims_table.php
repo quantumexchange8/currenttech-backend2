@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('decline_reason')->nullable();
             $table->integer('status')->default(Claims::STATUS_PENDING);
             $table->string('attachment')->nullable();
+            $table->date('date');
             $table->timestamps();
             $table->softDeletes();
             $table->unsignedBigInteger('user_id');

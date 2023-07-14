@@ -259,7 +259,7 @@
                                     </div>
                                     <div class="col-6">
                                         <a class="text-secondary text-decoration-none">
-                                            @switch($user->maritial_status)
+                                            @switch($user->employment_type)
                                                 @case(\App\Models\User::EMPLOYMENT_TYPE_PERMENANT)
                                                     @lang('public.permanent')
                                                     @break

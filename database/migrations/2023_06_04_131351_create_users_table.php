@@ -28,6 +28,7 @@ return new class extends Migration {
             $table->string('emergency_contact');
             $table->string('emergency_contact_relationship');
             $table->longText('background');
+            $table->string('profile_picture')->nullable();
 
             $table->string('bank_name');
             $table->string('bank_account_number');

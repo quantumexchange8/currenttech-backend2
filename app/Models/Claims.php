@@ -23,6 +23,31 @@ class Claims extends Model
 
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
+    public static function getClaimTypeArray()
+    {
+        return [
+            self::TYPE_CARPARK,
+            self::TYPE_STATIONARY,
+            self::TYPE_TRAVEL,
+            self::TYPE_GIFT,
+            self::TYPE_ENTERTAINMENT,
+           self::TYPE_OTHERS
+        ];
+    }
+
+
+    public static function getClaimTypeWithKey($type)
+    {
+        return match ($type) {
+            self::TYPE_CARPARK => trans('public.type_carpark'),
+            self::TYPE_STATIONARY => trans('public.type_stationary'),
+            self::TYPE_TRAVEL => trans('public.type_travel'),
+            self::TYPE_GIFT => trans('public.type_gift'),
+            self::TYPE_ENTERTAINMENT => trans('public.type_entertainment'),
+            default => trans('public.type_others'),
+        };
+    }
+
     public function getClaimType()
     {
         return match ($this->claim_type) {

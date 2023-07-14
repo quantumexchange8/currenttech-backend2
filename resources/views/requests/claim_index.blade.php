@@ -81,7 +81,7 @@
                                     <td>{{$record->user->employee_id}}</td>
                                     <td>{{$record->user->name}}</td>
                                     <td>{{$record->getClaimType()}}</td>
-                                    <td>{{ \Carbon\Carbon::parse($record->created_at)->format('Y-m-d') }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($record->date)->format('Y-m-d') }}</td>
                                     <td>{{$record->merchant}}</td>
                                     <td>{{$record->amount}}</td>
                                     <td class="{{$record->getStatus()['class']}}">{{$record->getStatus()['text']}}</td>

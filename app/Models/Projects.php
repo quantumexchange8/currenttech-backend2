@@ -89,6 +89,42 @@ class Projects extends Model
         return User::whereIn('id', $members_array);
     }
 
+    public function project_status()
+    {
+        $status = 'New Project';
+
+        $tasks = $this->tasks()->get();
+        if ($tasks->count() > 0) {
+            $array = $tasks->pluck('status')->toArray();
+            if (count(array_unique($array)) === 1   ) {
+                if (in_array(Tasks::STATUS_COMPLETED, $array, true)) {
+                    $status = 'Completed';
+                } elseif (in_array(Tasks::STATUS_PLANNED, $array, true)) {
+                    $status = 'New Project';
+                } else {
+                    $status = 'In Progress';
+                }
+            } else {
+                $status = 'In Progress';
+            }
+        }
+
+        return $status;
+    }
+
+    public function project_progress()
+    {
+        $tasks_query = $this->tasks();
+        $all_tasks = $tasks_query->get()->count();
+
+        if ($all_tasks > 0) {
+            $completed_tasks = $tasks_query->where('status', Tasks::STATUS_COMPLETED)->get()->count();
+
+            return number_format($completed_tasks/$all_tasks * 100, 2, '.', '');
+        }
+        return number_format(0, 2, '.', '');
+    }
+
     public function attachments(): HasMany
     {
         return $this->hasMany(ProjectAttachments::class, 'project_id', 'id');

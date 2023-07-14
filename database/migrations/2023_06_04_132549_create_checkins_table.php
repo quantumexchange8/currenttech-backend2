@@ -18,6 +18,9 @@ return new class extends Migration
             $table->string('attachment')->nullable();
             $table->dateTime('start_time');
             $table->dateTime('end_time')->nullable();
+            $table->dateTime('rest_time')->nullable();
+            $table->dateTime('lunch_time')->nullable();
+            $table->string('duration')->nullable();
 
             $table->timestamps();
             $table->softDeletes();

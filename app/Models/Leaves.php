@@ -28,6 +28,22 @@ class Leaves extends Model
 
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
+    public static function getTypesArray()
+    {
+        return[
+            self::TYPE_ANNUAL,
+            self::TYPE_SICK,
+            self::TYPE_HOSPITALISATION,
+            self::TYPE_COMPASSIONATE,
+            self::TYPE_MATERNITY,
+            self::TYPE_PATERNITY,
+            self::TYPE_CASUAL,
+            self::TYPE_UNPAID,
+            self::TYPE_COVID,
+            self::TYPE_OTHERS
+        ];
+    }
+
     public function getLeaveType()
     {
         return match ($this->leave_type) {
@@ -86,18 +102,18 @@ class Leaves extends Model
         if ($employee_name !== null) {
             $employee_name = explode(' ', $employee_name);
         }
-        if(!empty($employee_name)){
+        if (!empty($employee_name)) {
             $name_array = self::query()->where(function ($query) use ($employee_name) {
-                foreach($employee_name as $freetexts) {
+                foreach ($employee_name as $freetexts) {
                     $query->whereHas('user', function ($q) use ($freetexts) {
                         $q->where('name', 'like', '%' . $freetexts . '%');
                     });
                 }
             })->pluck('user_id')->unique()->toArray();
         }
-        if($employee_id){
+        if ($employee_id) {
             $id_array = self::query()->where(function ($query) use ($employee_id) {
-                foreach($employee_id as $freetexts) {
+                foreach ($employee_id as $freetexts) {
                     $query->whereHas('user', function ($q) use ($freetexts) {
                         $q->where('employee_id', 'like', '%' . $freetexts . '%');
                     });
@@ -123,7 +139,8 @@ class Leaves extends Model
         return $query->orderbyDesc('from_date');
     }
 
-    public function user() {
+    public function user()
+    {
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 }

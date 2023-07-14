@@ -184,14 +184,14 @@
                     <div class="modal-body">
                         <input type="hidden" name="id" id="id" value="{{ @$input->id }}">
                         <div class="row">
-                                <label for="name" class="form-label">@lang('public.name')</label>
+                                <label for="reason" class="form-label">@lang('public.reason')</label>
                                 <div class="input-group">
-                                    <input type="text" class="form-control" id="name" name="name"
+                                    <input type="text" class="form-control" id="reject-reason" name="reason"
                                            required="required"
-                                           aria-label="name" aria-describedby="basic-addon2"
-                                           value="{{ @$input->name }}">
+                                           aria-label="reason" aria-describedby="basic-addon2"
+                                           value="{{ @$input->reason }}">
                                 </div>
-                                @error('name')
+                                @error('reason')
                                 <div>
                                     <p class="pt-2 text-danger">{{ $message }}</p>
                                 </div>
